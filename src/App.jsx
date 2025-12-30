@@ -7,7 +7,7 @@ import PhotoCompare from './pages/PhotoCompare';
 import Heatmap from './pages/Heatmap';
 import UploadProof from './pages/UploadProof';
 import SpotList from './pages/SpotList';
-import logo from './assets/logo.svg';
+import logo from './assets/해파리젤리버거.png';
 import { login as apiLogin, signup as apiSignup } from './services/api';
 import './styles/styles.css';
 

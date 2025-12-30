@@ -36,13 +36,20 @@ export const login = async (name, password) => {
 };
 
 // Position APIs
-export const uploadPosition = async (x_pos, y_pos, address) => {
+export const uploadPosition = async (spot_name, x_pos, y_pos, address, pos_explain, memo) => {
   const response = await fetch(`${API_BASE_URL}/pos/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ x_pos, y_pos, address }),
+    body: JSON.stringify({
+      spot_name,
+      x_pos,
+      y_pos,
+      address,
+      pos_explain,
+      memo
+    }),
   });
 
   if (!response.ok) {

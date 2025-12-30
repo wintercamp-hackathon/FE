@@ -1,17 +1,43 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useSpots } from '../context/SpotContext';
+import { getHeatmapData } from '../services/api';
 
 export default function Heatmap() {
   const { spots } = useSpots();
   const [isHeatmapOn, setIsHeatmapOn] = useState(true);
+  const [heatmapPoints, setHeatmapPoints] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchHeatmapData = async () => {
+      setLoading(true);
+      try {
+        const data = await getHeatmapData();
+        setHeatmapPoints(data);
+      } catch (error) {
+        console.error('히트맵 데이터 로드 실패:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeatmapData();
+  }, []);
 
   const KOREA_CENTER = [35.1028, 129.0403]; // 부산항
   const KOREA_BOUNDS = [
     [33.0, 124.5],
     [39.5, 132.0],
   ];
+
+  const levelToStatus = (level) => {
+    if (level >= 3) return 'danger';
+    if (level === 2) return 'warning';
+    if (level === 1) return 'safe';
+    return 'unknown';
+  };
 
   const getRiskColor = (status) => {
     switch(status) {
@@ -38,6 +64,13 @@ export default function Heatmap() {
       case 'safe': return 40;
       default: return 30;
     }
+  };
+
+  const getRadiusFromLevel = (level) => {
+    if (level >= 3) return 100;
+    if (level === 2) return 70;
+    if (level === 1) return 40;
+    return 30;
   };
 
   const stats = useMemo(() => {
@@ -117,7 +150,7 @@ export default function Heatmap() {
 
           {isHeatmapOn && spots.map((spot) => (
             <CircleMarker
-              key={spot.id}
+              key={`spot-${spot.id}`}
               center={[spot.lat, spot.lng]}
               radius={getRadius(spot.status)}
               pathOptions={{
@@ -139,6 +172,33 @@ export default function Heatmap() {
               </Popup>
             </CircleMarker>
           ))}
+
+          {isHeatmapOn && heatmapPoints.map((point, index) => {
+            const status = levelToStatus(point.level);
+            return (
+              <CircleMarker
+                key={`heatmap-${index}`}
+                center={[point.x_pos, point.y_pos]}
+                radius={getRadiusFromLevel(point.level)}
+                pathOptions={{
+                  fillColor: getRiskColor(status),
+                  fillOpacity: 0.3,
+                  color: getRiskColor(status),
+                  weight: 1,
+                  opacity: 0.6
+                }}
+              >
+                <Popup>
+                  <div className="heatmap-popup">
+                    <strong>폴립 발생 지점</strong>
+                    <p>위험도: {getRiskLabel(status)}</p>
+                    <p>레벨: {point.level}</p>
+                    {point.address && <p>위치: {point.address}</p>}
+                  </div>
+                </Popup>
+              </CircleMarker>
+            );
+          })}
         </MapContainer>
       </div>
     </div>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useSpots } from "../context/SpotContext";
-import { uploadPosition } from "../services/api";
 
 function LocationPicker({ onLocationSelect }) {
   useMapEvents({
@@ -201,11 +200,11 @@ export default function Map() {
               </div>
 
               <div className="form-actions">
-                <button type="button" onClick={handleCancel} className="btn-secondary">
+                <button type="button" onClick={handleCancel} className="btn-secondary" disabled={loading}>
                   취소
                 </button>
-                <button type="submit" className="btn-primary">
-                  등록
+                <button type="submit" className="btn-primary" disabled={loading}>
+                  {loading ? '등록중...' : '등록'}
                 </button>
               </div>
             </form>
