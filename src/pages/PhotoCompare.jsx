@@ -8,7 +8,6 @@ export default function PhotoCompare() {
   const [selectedSpotId, setSelectedSpotId] = useState('');
   const containerRef = useRef(null);
 
-  // 사진이 업로드되고 폴립 제거 완료된 Spot만 필터링 (danger/warning → safe)
   const spotsWithPhotos = spots.filter(spot =>
     spot.beforeImage && spot.afterImage && spot.status === 'safe'
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useSpots } from "../context/SpotContext";
+import { uploadPosition } from "../services/api";
 
 function LocationPicker({ onLocationSelect }) {
   useMapEvents({
@@ -16,6 +17,7 @@ export default function Map() {
   const { spots, addSpot } = useSpots();
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     type: '폴립 발생',
