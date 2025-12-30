@@ -1,53 +1,53 @@
-import { useState } from 'react';
-import {
-  MapContainer,
-  TileLayer,
-  CircleMarker,
-  Popup
-} from 'react-leaflet';
+import { useState, useMemo } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useSpots } from '../context/SpotContext';
 
 export default function Heatmap() {
+  const { spots } = useSpots();
   const [isHeatmapOn, setIsHeatmapOn] = useState(true);
 
-  const heatmapData = [
-    { lat: 37.5665, lng: 126.978, risk: 'high', value: 90 },
-    { lat: 37.5490, lng: 126.9150, risk: 'medium', value: 60 },
-    { lat: 37.5700, lng: 126.9850, risk: 'low', value: 30 },
-    { lat: 37.5550, lng: 126.9700, risk: 'high', value: 85 },
-    { lat: 37.5600, lng: 126.9900, risk: 'medium', value: 55 },
-    { lat: 37.5750, lng: 126.9700, risk: 'low', value: 25 },
-    { lat: 37.5450, lng: 126.9600, risk: 'high', value: 95 },
-    { lat: 37.5650, lng: 126.9800, risk: 'medium', value: 50 }
-  ];
-
-  const KOREA_CENTER = [37.5665, 126.978];
+  const KOREA_CENTER = [35.1028, 129.0403]; // 부산항
   const KOREA_BOUNDS = [
     [33.0, 124.5],
     [39.5, 132.0],
   ];
 
-  const getRiskColor = (risk) => {
-    switch(risk) {
-      case 'high': return '#f44336';
-      case 'medium': return '#ff9800';
-      case 'low': return '#4caf50';
+  const getRiskColor = (status) => {
+    switch(status) {
+      case 'danger': return '#f44336';
+      case 'warning': return '#ff9800';
+      case 'safe': return '#4caf50';
       default: return '#9e9e9e';
     }
   };
 
-  const getRiskLabel = (risk) => {
-    switch(risk) {
-      case 'high': return '높음';
-      case 'medium': return '보통';
-      case 'low': return '낮음';
+  const getRiskLabel = (status) => {
+    switch(status) {
+      case 'danger': return '위험';
+      case 'warning': return '주의';
+      case 'safe': return '안정';
       default: return '알 수 없음';
     }
   };
 
-  const getRadius = (value) => {
-    return (value / 100) * 80 + 20;
+  const getRadius = (status) => {
+    switch(status) {
+      case 'danger': return 100;
+      case 'warning': return 70;
+      case 'safe': return 40;
+      default: return 30;
+    }
   };
+
+  const stats = useMemo(() => {
+    return {
+      total: spots.length,
+      danger: spots.filter(s => s.status === 'danger').length,
+      warning: spots.filter(s => s.status === 'warning').length,
+      safe: spots.filter(s => s.status === 'safe').length
+    };
+  }, [spots]);
 
   return (
     <div className="page-container heatmap-page">
@@ -68,15 +68,15 @@ export default function Heatmap() {
             <div className="legend-items">
               <div className="legend-item">
                 <div className="legend-color" style={{ background: '#f44336' }}></div>
-                <span>높음 (80-100)</span>
+                <span>위험</span>
               </div>
               <div className="legend-item">
                 <div className="legend-color" style={{ background: '#ff9800' }}></div>
-                <span>보통 (50-79)</span>
+                <span>주의</span>
               </div>
               <div className="legend-item">
                 <div className="legend-color" style={{ background: '#4caf50' }}></div>
-                <span>낮음 (0-49)</span>
+                <span>안정</span>
               </div>
             </div>
           </div>
@@ -85,25 +85,19 @@ export default function Heatmap() {
         <div className="stats">
           <div className="stat-item">
             <span className="stat-label">총 지점</span>
-            <span className="stat-value">{heatmapData.length}</span>
+            <span className="stat-value">{stats.total}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">고위험</span>
-            <span className="stat-value high">
-              {heatmapData.filter(d => d.risk === 'high').length}
-            </span>
+            <span className="stat-label">위험</span>
+            <span className="stat-value high">{stats.danger}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">중위험</span>
-            <span className="stat-value medium">
-              {heatmapData.filter(d => d.risk === 'medium').length}
-            </span>
+            <span className="stat-label">주의</span>
+            <span className="stat-value medium">{stats.warning}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">저위험</span>
-            <span className="stat-value low">
-              {heatmapData.filter(d => d.risk === 'low').length}
-            </span>
+            <span className="stat-label">안정</span>
+            <span className="stat-value low">{stats.safe}</span>
           </div>
         </div>
       </div>
@@ -121,24 +115,26 @@ export default function Heatmap() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {isHeatmapOn && heatmapData.map((point, index) => (
+          {isHeatmapOn && spots.map((spot) => (
             <CircleMarker
-              key={index}
-              center={[point.lat, point.lng]}
-              radius={getRadius(point.value)}
+              key={spot.id}
+              center={[spot.lat, spot.lng]}
+              radius={getRadius(spot.status)}
               pathOptions={{
-                fillColor: getRiskColor(point.risk),
+                fillColor: getRiskColor(spot.status),
                 fillOpacity: 0.5,
-                color: getRiskColor(point.risk),
+                color: getRiskColor(spot.status),
                 weight: 2,
                 opacity: 0.8
               }}
             >
               <Popup>
                 <div className="heatmap-popup">
-                  <strong>위험도: {getRiskLabel(point.risk)}</strong>
-                  <p>지수: {point.value}</p>
-                  <p>위치: {point.lat.toFixed(4)}, {point.lng.toFixed(4)}</p>
+                  <strong>{spot.name}</strong>
+                  <p>유형: {spot.type}</p>
+                  <p>위험도: {getRiskLabel(spot.status)}</p>
+                  <p>위치: {spot.location}</p>
+                  {spot.memo && <p>메모: {spot.memo}</p>}
                 </div>
               </Popup>
             </CircleMarker>

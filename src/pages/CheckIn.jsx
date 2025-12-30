@@ -1,40 +1,9 @@
 import { useState } from 'react';
+import { useSpots } from '../context/SpotContext';
 
 export default function CheckIn() {
-  const [spots, setSpots] = useState([
-    {
-      id: 1,
-      name: 'Spot A',
-      location: '서울시 강남구',
-      lat: 37.5665,
-      lng: 126.978,
-      radius: 50,
-      isLocked: false,
-      lockedBy: null
-    },
-    {
-      id: 2,
-      name: 'Spot B',
-      location: '서울시 마포구',
-      lat: 37.5490,
-      lng: 126.9150,
-      radius: 50,
-      isLocked: true,
-      lockedBy: '홍길동'
-    },
-    {
-      id: 3,
-      name: 'Spot C',
-      location: '서울시 종로구',
-      lat: 37.5700,
-      lng: 126.9850,
-      radius: 50,
-      isLocked: false,
-      lockedBy: null
-    }
-  ]);
-
-  const [currentLocation] = useState({ lat: 37.5665, lng: 126.978 });
+  const { spots, checkIn, checkOut } = useSpots();
+  const [currentLocation] = useState({ lat: 35.0950, lng: 129.0350 }); // Spot A
   const [selectedSpot, setSelectedSpot] = useState(null);
 
   const calculateDistance = (lat1, lng1, lat2, lng2) => {
@@ -67,20 +36,12 @@ export default function CheckIn() {
       return;
     }
 
-    setSpots(spots.map(s =>
-      s.id === spot.id
-        ? { ...s, isLocked: true, lockedBy: '나' }
-        : s
-    ));
+    checkIn(spot.id, '나');
     setSelectedSpot(spot.id);
   };
 
   const handleCheckOut = (spot) => {
-    setSpots(spots.map(s =>
-      s.id === spot.id
-        ? { ...s, isLocked: false, lockedBy: null }
-        : s
-    ));
+    checkOut(spot.id);
     if (selectedSpot === spot.id) {
       setSelectedSpot(null);
     }
@@ -123,6 +84,11 @@ export default function CheckIn() {
                 <div className="info-row">
                   <span className="label">위치</span>
                   <span className="value">{spot.location}</span>
+                </div>
+
+                <div className="info-row">
+                  <span className="label">유형</span>
+                  <span className="value">{spot.type}</span>
                 </div>
 
                 <div className="info-row">

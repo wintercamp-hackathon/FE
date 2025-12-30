@@ -50,8 +50,8 @@ body {
 
 /* ==================== 네비게이션 ==================== */
 .main-nav {
-  background: transparent;
-  box-shadow: var(--shadow-md);
+  background: white;
+  /*box-shadow: var(--shadow-md);*/
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -67,10 +67,9 @@ body {
 }
 
 .nav-logo {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--color-accent);
-  margin: 0;
+  height: 32px;
+  width: auto;
+  display: block;
 }
 
 .nav-menu {
@@ -92,6 +91,55 @@ body {
 .nav-link:hover {
   background: var(--color-primary-light);
   color: var(--color-accent);
+}
+
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.auth-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  white-space: nowrap;
+}
+
+.login-btn {
+  background: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.login-btn:hover {
+  background: var(--color-primary-light);
+}
+
+.signup-btn {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.signup-btn:hover {
+  background: var(--color-accent-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.logout-btn {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.logout-btn:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ==================== 공통 페이지 레이아웃 ==================== */
@@ -571,6 +619,13 @@ body {
 
   .nav-menu {
     gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-auth {
+    width: 100%;
+    justify-content: center;
   }
 
   .spots-grid {
@@ -593,4 +648,343 @@ body {
   .compare-info {
     flex-direction: column;
   }
+}
+
+/* ==================== 지도 폼 스타일 ==================== */
+.map-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.map-form-container {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  padding: var(--spacing-xl);
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.map-form-container h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-sm);
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.form-actions button {
+  flex: 1;
+}
+
+.map-instruction {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+}
+
+.map-instruction p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-accent);
+}
+
+/* ==================== 이미지 업로드 스타일 ==================== */
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.upload-section {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.upload-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-md);
+}
+
+.image-upload-box {
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  padding: var(--spacing-lg);
+  min-height: 200px;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--color-bg);
+}
+
+.image-upload-box:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.image-upload-box.has-image {
+  border-color: var(--color-success);
+  background: var(--color-white);
+  padding: 0;
+  min-height: auto;
+}
+
+.image-upload-box.has-image:hover {
+  transform: none;
+}
+
+.upload-icon {
+  font-size: 48px;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-sm);
+}
+
+.upload-text {
+  font-size: 14px;
+  color: var(--color-text-light);
+}
+
+.preview-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-actions {
+  margin-top: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+/* ==================== Spot 선택 스타일 ==================== */
+.spot-selector {
+  margin-bottom: var(--spacing-lg);
+}
+
+.spot-selector label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.spot-selector select {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.spot-info-box {
+  background: var(--color-primary-light);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-sm);
+}
+
+.spot-info-box p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+.spot-info-box strong {
+  color: var(--color-accent);
+}
+
+/* ==================== Spot 목록 페이지 ==================== */
+.filter-controls {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-section {
+  flex: 1;
+}
+
+.filter-section label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.filter-section select {
+  width: 100%;
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.list-stats {
+  margin-bottom: var(--spacing-md);
+  font-size: 14px;
+  color: var(--color-text-light);
+}
+
+.spot-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.list-item {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.list-item:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.list-item-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.list-item-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-accent);
+  margin: 0;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.reinspect-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-warning);
+  color: var(--color-white);
+}
+
+.list-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.list-item-body .memo {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--color-bg);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text-light);
+}
+
+.list-item-body .memo strong {
+  color: var(--color-text);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-light);
 }
